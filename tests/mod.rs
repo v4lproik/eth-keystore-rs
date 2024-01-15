@@ -5,21 +5,15 @@ mod tests {
     use super::*;
     use eth_keystore::{decrypt_key_v3, encrypt_key_v3};
     use eth_keystore::{decrypt_key_v4, encrypt_key_v4};
-    use rand::prelude::ThreadRng;
-    use rand::RngCore;
-
-    fn generate_priv_key(rng: &mut ThreadRng) -> Vec<u8> {
-        let mut private_key = vec![0u8; 32];
-        rng.fill_bytes(private_key.as_mut_slice());
-        private_key
-    }
 
     #[test]
     fn test_keystore_v3_without_name_should_return_priv_key() {
         let dir = Path::new("./tests/test-keys");
         let mut rng = rand::thread_rng();
         let password = "thebestrandompassword";
-        let priv_key = generate_priv_key(&mut rng);
+        let priv_key =
+            Vec::from_hex("4c627588f8040116b75f14fdb55b552612a46a2cd91e65b516defe39d81fc08f")
+                .unwrap();
 
         let id = encrypt_key_v3(&dir, &mut rng, priv_key.clone(), password, None).unwrap();
 
@@ -34,7 +28,9 @@ mod tests {
         let mut rng = rand::thread_rng();
         let password = "thebestrandompassword";
         let name = "my_keystore_v3";
-        let priv_key = generate_priv_key(&mut rng);
+        let priv_key =
+            Vec::from_hex("4c627588f8040116b75f14fdb55b552612a46a2cd91e65b516defe39d81fc08f")
+                .unwrap();
 
         let id = encrypt_key_v3(&dir, &mut rng, priv_key.clone(), password, Some(name)).unwrap();
 
@@ -48,7 +44,9 @@ mod tests {
         let dir = Path::new("./tests/test-keys");
         let mut rng = rand::thread_rng();
         let password = "thebestrandompassword";
-        let priv_key = generate_priv_key(&mut rng);
+        let priv_key =
+            Vec::from_hex("4c627588f8040116b75f14fdb55b552612a46a2cd91e65b516defe39d81fc08f")
+                .unwrap();
 
         let id = encrypt_key_v3(&dir, &mut rng, priv_key.clone(), password, None).unwrap();
 
@@ -84,7 +82,9 @@ mod tests {
         let dir = Path::new("./tests/test-keys");
         let mut rng = rand::thread_rng();
         let password = "thebestrandompassword";
-        let priv_key = generate_priv_key(&mut rng);
+        let priv_key =
+            Vec::from_hex("4c627588f8040116b75f14fdb55b552612a46a2cd91e65b516defe39d81fc08f")
+                .unwrap();
 
         let id = encrypt_key_v4(&dir, &mut rng, priv_key.clone(), password, None).unwrap();
 
@@ -99,7 +99,9 @@ mod tests {
         let mut rng = rand::thread_rng();
         let password = "thebestrandompassword";
         let name = "my_keystore_v4";
-        let priv_key = generate_priv_key(&mut rng);
+        let priv_key =
+            Vec::from_hex("4c627588f8040116b75f14fdb55b552612a46a2cd91e65b516defe39d81fc08f")
+                .unwrap();
 
         let id = encrypt_key_v4(&dir, &mut rng, priv_key.clone(), password, Some(name)).unwrap();
 
@@ -113,7 +115,9 @@ mod tests {
         let dir = Path::new("./tests/test-keys");
         let mut rng = rand::thread_rng();
         let password = "thebestrandompassword";
-        let priv_key = generate_priv_key(&mut rng);
+        let priv_key =
+            Vec::from_hex("4c627588f8040116b75f14fdb55b552612a46a2cd91e65b516defe39d81fc08f")
+                .unwrap();
 
         let id = encrypt_key_v3(&dir, &mut rng, priv_key.clone(), password, None).unwrap();
 
