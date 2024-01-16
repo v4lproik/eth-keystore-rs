@@ -81,7 +81,7 @@ where
             salt,
         } => {
             let mut key = vec![0u8; dklen as usize];
-            pbkdf2::<Hmac<Sha256>>(password.as_ref(), &salt, c, key.as_mut_slice());
+            let _ = pbkdf2::<Hmac<Sha256>>(password.as_ref(), &salt, c, key.as_mut_slice());
             key
         }
         KdfparamsType::Scrypt {
@@ -280,7 +280,7 @@ where
             salt,
         } => {
             let mut key = vec![0u8; dklen as usize];
-            pbkdf2::<Hmac<Sha256>>(password.as_ref(), &salt, c, key.as_mut_slice());
+            let _ = pbkdf2::<Hmac<Sha256>>(password.as_ref(), &salt, c, key.as_mut_slice());
             key
         }
         KdfparamsType::Scrypt {
