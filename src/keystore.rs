@@ -129,20 +129,20 @@ pub enum HashFunction {
 }
 
 fn buffer_to_hex<T, S>(buffer: &T, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        T: AsRef<[u8]>,
-        S: Serializer,
+where
+    T: AsRef<[u8]>,
+    S: Serializer,
 {
     serializer.serialize_str(&buffer.encode_hex::<String>())
 }
 
 fn hex_to_buffer<'de, D>(deserializer: D) -> Result<Vec<u8>, D::Error>
-    where
-        D: Deserializer<'de>,
+where
+    D: Deserializer<'de>,
 {
     use serde::de::Error;
     String::deserialize(deserializer)
-        .and_then(|string| Vec::from_hex(&string).map_err(|err| Error::custom(err.to_string())))
+        .and_then(|string| Vec::from_hex(string).map_err(|err| Error::custom(err.to_string())))
 }
 
 #[cfg(test)]
@@ -231,7 +231,7 @@ mod tests {
                 salt: Vec::from_hex(
                     "ae3cd4e7013836a3df6bd7241b12db061dbe2c6785853cce422d148a624ce0bd"
                 )
-                    .unwrap(),
+                .unwrap(),
             }
         );
         assert_eq!(
@@ -292,7 +292,7 @@ mod tests {
                 salt: Vec::from_hex(
                     "ab0c7876052600dd703518d6fc3fe8984592145b591fc8fb5c6d43190334ba19"
                 )
-                    .unwrap(),
+                .unwrap(),
             }
         );
         assert_eq!(
@@ -301,7 +301,6 @@ mod tests {
                 .unwrap()
         );
     }
-
 
     #[cfg(not(feature = "geth-compat"))]
     #[test]
@@ -382,7 +381,7 @@ mod tests {
                 salt: Vec::from_hex(
                     "d4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3"
                 )
-                    .unwrap(),
+                .unwrap(),
             }
         );
         assert_eq!(keystore.crypto.kdf.message, Vec::from_hex("").unwrap());
@@ -505,7 +504,7 @@ mod tests {
                 salt: Vec::from_hex(
                     "d4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3"
                 )
-                    .unwrap(),
+                .unwrap(),
             }
         );
         assert_eq!(keystore.crypto.kdf.message, Vec::from_hex("").unwrap());

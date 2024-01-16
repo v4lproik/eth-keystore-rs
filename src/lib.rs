@@ -23,9 +23,9 @@ mod error;
 mod keystore;
 mod utils;
 
+use crate::keystore::{CipherparamsJsonV3, CryptoJsonV3, EthKeystoreV3};
 pub use error::KeystoreError;
 pub use keystore::{CipherparamsJson, CryptoJsonV4, EthKeystoreV4, KdfType, KdfparamsType};
-use crate::keystore::{CipherparamsJsonV3, CryptoJsonV3, EthKeystoreV3};
 
 #[cfg(feature = "geth-compat")]
 use utils::geth_compat::address_from_pk;
@@ -55,9 +55,9 @@ const DEFAULT_KDF_PARAMS_P: u32 = 1u32;
 /// # }
 /// ```
 pub fn decrypt_key_v3<P, S>(path: P, password: S) -> Result<Vec<u8>, KeystoreError>
-    where
-        P: AsRef<Path>,
-        S: AsRef<[u8]>,
+where
+    P: AsRef<Path>,
+    S: AsRef<[u8]>,
 {
     // Read the file contents as string and deserialize it.
     let mut file = File::open(path)?;
@@ -65,9 +65,12 @@ pub fn decrypt_key_v3<P, S>(path: P, password: S) -> Result<Vec<u8>, KeystoreErr
     decrypt_keystore_v3(keystore, password)
 }
 
-pub fn decrypt_keystore_v3<S>(keystore: EthKeystoreV3, password: S) -> Result<Vec<u8>, KeystoreError>
-    where
-        S: AsRef<[u8]>,
+pub fn decrypt_keystore_v3<S>(
+    keystore: EthKeystoreV3,
+    password: S,
+) -> Result<Vec<u8>, KeystoreError>
+where
+    S: AsRef<[u8]>,
 {
     // Derive the key.
     let key = match keystore.crypto.kdfparams {
@@ -78,7 +81,7 @@ pub fn decrypt_keystore_v3<S>(keystore: EthKeystoreV3, password: S) -> Result<Ve
             salt,
         } => {
             let mut key = vec![0u8; dklen as usize];
-            pbkdf2::<Hmac<Sha256>>(password.as_ref(), &salt, c, key.as_mut_slice());
+            let _ = pbkdf2::<Hmac<Sha256>>(password.as_ref(), &salt, c, key.as_mut_slice());
             key
         }
         KdfparamsType::Scrypt {
@@ -147,11 +150,11 @@ pub fn encrypt_key_v3<P, R, B, S>(
     password: S,
     name: Option<&str>,
 ) -> Result<String, KeystoreError>
-    where
-        P: AsRef<Path>,
-        R: Rng + CryptoRng,
-        B: AsRef<[u8]>,
-        S: AsRef<[u8]>,
+where
+    P: AsRef<Path>,
+    R: Rng + CryptoRng,
+    B: AsRef<[u8]>,
+    S: AsRef<[u8]>,
 {
     let keystore = encrypt_keystore_v3(rng, priv_key, password)?;
 
@@ -174,10 +177,10 @@ pub fn encrypt_keystore_v3<R, B, S>(
     priv_key: B,
     password: S,
 ) -> Result<EthKeystoreV3, KeystoreError>
-    where
-        R: Rng + CryptoRng,
-        B: AsRef<[u8]>,
-        S: AsRef<[u8]>,
+where
+    R: Rng + CryptoRng,
+    B: AsRef<[u8]>,
+    S: AsRef<[u8]>,
 {
     // Generate a random salt.
     let mut salt = vec![0u8; DEFAULT_KEY_SIZE];
@@ -234,7 +237,6 @@ pub fn encrypt_keystore_v3<R, B, S>(
     Ok(keystore)
 }
 
-
 /// Decrypts an encrypted JSON keystore at the provided `path` using the provided `password`.
 /// Decryption supports the [Scrypt](https://tools.ietf.org/html/rfc7914.html) and
 /// [PBKDF2](https://ietf.org/rfc/rfc2898.txt) key derivation functions.
@@ -252,9 +254,9 @@ pub fn encrypt_keystore_v3<R, B, S>(
 /// # }
 /// ```
 pub fn decrypt_key_v4<P, S>(path: P, password: S) -> Result<Vec<u8>, KeystoreError>
-    where
-        P: AsRef<Path>,
-        S: AsRef<[u8]>,
+where
+    P: AsRef<Path>,
+    S: AsRef<[u8]>,
 {
     // Read the file contents as string and deserialize it into a `EthKeystore` struct.
     let mut file = File::open(path)?;
@@ -262,9 +264,12 @@ pub fn decrypt_key_v4<P, S>(path: P, password: S) -> Result<Vec<u8>, KeystoreErr
     decrypt_keystore_v4(keystore, password)
 }
 
-pub fn decrypt_keystore_v4<S>(keystore: EthKeystoreV4, password: S) -> Result<Vec<u8>, KeystoreError>
-    where
-        S: AsRef<[u8]>,
+pub fn decrypt_keystore_v4<S>(
+    keystore: EthKeystoreV4,
+    password: S,
+) -> Result<Vec<u8>, KeystoreError>
+where
+    S: AsRef<[u8]>,
 {
     // Derive the key.
     let key = match keystore.crypto.kdf.params {
@@ -275,7 +280,7 @@ pub fn decrypt_keystore_v4<S>(keystore: EthKeystoreV4, password: S) -> Result<Ve
             salt,
         } => {
             let mut key = vec![0u8; dklen as usize];
-            pbkdf2::<Hmac<Sha256>>(password.as_ref(), &salt, c, key.as_mut_slice());
+            let _ = pbkdf2::<Hmac<Sha256>>(password.as_ref(), &salt, c, key.as_mut_slice());
             key
         }
         KdfparamsType::Scrypt {
@@ -344,11 +349,11 @@ pub fn encrypt_key_v4<P, R, B, S>(
     password: S,
     name: Option<&str>,
 ) -> Result<String, KeystoreError>
-    where
-        P: AsRef<Path>,
-        R: Rng + CryptoRng,
-        B: AsRef<[u8]>,
-        S: AsRef<[u8]>,
+where
+    P: AsRef<Path>,
+    R: Rng + CryptoRng,
+    B: AsRef<[u8]>,
+    S: AsRef<[u8]>,
 {
     let pub_key = None::<&str>;
     let keystore = encrypt_keystore_v4(rng, priv_key, pub_key, password)?;
@@ -374,11 +379,11 @@ pub fn encrypt_keystore_v4<R, B, S, P>(
     pub_key: Option<P>,
     password: S,
 ) -> Result<EthKeystoreV4, KeystoreError>
-    where
-        R: Rng + CryptoRng,
-        B: AsRef<[u8]>,
-        S: AsRef<[u8]>,
-        P: AsRef<str>,
+where
+    R: Rng + CryptoRng,
+    B: AsRef<[u8]>,
+    S: AsRef<[u8]>,
+    P: AsRef<str>,
 {
     let pubkey = match pub_key {
         Some(pk) => pk.as_ref().to_string(),

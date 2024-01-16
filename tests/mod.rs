@@ -2,32 +2,23 @@ use hex::FromHex;
 use std::path::Path;
 
 mod tests {
-    use rand::prelude::ThreadRng;
-    use rand::RngCore;
-    use eth_keystore::{decrypt_key_v4, encrypt_key_v4};
-    use eth_keystore::{decrypt_key_v3, encrypt_key_v3};
     use super::*;
-
-    fn generate_priv_key(rng: &mut ThreadRng) -> Vec<u8> {
-        let mut private_key = vec![0u8; 32];
-        rng.fill_bytes(private_key.as_mut_slice());
-        private_key
-    }
+    use eth_keystore::{decrypt_key_v3, encrypt_key_v3};
+    use eth_keystore::{decrypt_key_v4, encrypt_key_v4};
 
     #[test]
     fn test_keystore_v3_without_name_should_return_priv_key() {
         let dir = Path::new("./tests/test-keys");
         let mut rng = rand::thread_rng();
         let password = "thebestrandompassword";
-        let priv_key = generate_priv_key(&mut rng);
+        let priv_key =
+            Vec::from_hex("4c627588f8040116b75f14fdb55b552612a46a2cd91e65b516defe39d81fc08f")
+                .unwrap();
 
         let id = encrypt_key_v3(&dir, &mut rng, priv_key.clone(), password, None).unwrap();
 
         let keypath = dir.join(&id);
-        assert_eq!(
-            decrypt_key_v3(&keypath, password).unwrap(),
-            priv_key
-        );
+        assert_eq!(decrypt_key_v3(&keypath, password).unwrap(), priv_key);
         assert!(std::fs::remove_file(&keypath).is_ok());
     }
 
@@ -37,15 +28,14 @@ mod tests {
         let mut rng = rand::thread_rng();
         let password = "thebestrandompassword";
         let name = "my_keystore_v3";
-        let priv_key = generate_priv_key(&mut rng);
+        let priv_key =
+            Vec::from_hex("4c627588f8040116b75f14fdb55b552612a46a2cd91e65b516defe39d81fc08f")
+                .unwrap();
 
         let id = encrypt_key_v3(&dir, &mut rng, priv_key.clone(), password, Some(name)).unwrap();
 
         let keypath = dir.join(&id);
-        assert_eq!(
-            decrypt_key_v3(&keypath, password).unwrap(),
-            priv_key
-        );
+        assert_eq!(decrypt_key_v3(&keypath, password).unwrap(), priv_key);
         assert!(std::fs::remove_file(&keypath).is_ok());
     }
 
@@ -54,14 +44,14 @@ mod tests {
         let dir = Path::new("./tests/test-keys");
         let mut rng = rand::thread_rng();
         let password = "thebestrandompassword";
-        let priv_key = generate_priv_key(&mut rng);
+        let priv_key =
+            Vec::from_hex("4c627588f8040116b75f14fdb55b552612a46a2cd91e65b516defe39d81fc08f")
+                .unwrap();
 
         let id = encrypt_key_v3(&dir, &mut rng, priv_key.clone(), password, None).unwrap();
 
         let keypath = dir.join(&id);
-        assert!(
-            decrypt_key_v3(&keypath, "wrongpassword").is_err()
-        );
+        assert!(decrypt_key_v3(&keypath, "wrongpassword").is_err());
         assert!(std::fs::remove_file(&keypath).is_ok());
     }
 
@@ -92,15 +82,14 @@ mod tests {
         let dir = Path::new("./tests/test-keys");
         let mut rng = rand::thread_rng();
         let password = "thebestrandompassword";
-        let priv_key = generate_priv_key(&mut rng);
+        let priv_key =
+            Vec::from_hex("4c627588f8040116b75f14fdb55b552612a46a2cd91e65b516defe39d81fc08f")
+                .unwrap();
 
         let id = encrypt_key_v4(&dir, &mut rng, priv_key.clone(), password, None).unwrap();
 
         let keypath = dir.join(&id);
-        assert_eq!(
-            decrypt_key_v4(&keypath, password).unwrap(),
-            priv_key
-        );
+        assert_eq!(decrypt_key_v4(&keypath, password).unwrap(), priv_key);
         assert!(std::fs::remove_file(&keypath).is_ok());
     }
 
@@ -110,15 +99,14 @@ mod tests {
         let mut rng = rand::thread_rng();
         let password = "thebestrandompassword";
         let name = "my_keystore_v4";
-        let priv_key = generate_priv_key(&mut rng);
+        let priv_key =
+            Vec::from_hex("4c627588f8040116b75f14fdb55b552612a46a2cd91e65b516defe39d81fc08f")
+                .unwrap();
 
         let id = encrypt_key_v4(&dir, &mut rng, priv_key.clone(), password, Some(name)).unwrap();
 
         let keypath = dir.join(&id);
-        assert_eq!(
-            decrypt_key_v4(&keypath, password).unwrap(),
-            priv_key
-        );
+        assert_eq!(decrypt_key_v4(&keypath, password).unwrap(), priv_key);
         assert!(std::fs::remove_file(&keypath).is_ok());
     }
 
@@ -127,15 +115,14 @@ mod tests {
         let dir = Path::new("./tests/test-keys");
         let mut rng = rand::thread_rng();
         let password = "thebestrandompassword";
-        let priv_key = generate_priv_key(&mut rng);
+        let priv_key =
+            Vec::from_hex("4c627588f8040116b75f14fdb55b552612a46a2cd91e65b516defe39d81fc08f")
+                .unwrap();
 
         let id = encrypt_key_v3(&dir, &mut rng, priv_key.clone(), password, None).unwrap();
 
         let keypath = dir.join(&id);
-        assert!(
-            decrypt_key_v4(&keypath, "wrongpassword").is_err()
-        );
+        assert!(decrypt_key_v4(&keypath, "wrongpassword").is_err());
         assert!(std::fs::remove_file(&keypath).is_ok());
     }
-
 }
